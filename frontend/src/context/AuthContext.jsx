@@ -8,12 +8,31 @@ export const AuthProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const fetchUser = async () => {
+        try {
+            const response = await api.get('auth/me/');
+            setUser(response.data);
+            setIsAuthenticated(true);
+        } catch (error) {
+            console.error('Failed to fetch user profile:', error);
+            setUser(null);
+            setIsAuthenticated(false);
+            localStorage.removeItem('access');
+            localStorage.removeItem('refresh');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
         const token = localStorage.getItem('access');
         if (token) {
-            setIsAuthenticated(true);
+            fetchUser();
+        } else {
+            setUser(null);
+            setIsAuthenticated(false);
+            setLoading(false);
         }
-        setLoading(false);
     }, []);
 
     const login = async (email, password) => {
@@ -22,9 +41,10 @@ export const AuthProvider = ({ children }) => {
             const response = await api.post('auth/login/', { email, password });
             localStorage.setItem('access', response.data.access);
             localStorage.setItem('refresh', response.data.refresh);
-            setIsAuthenticated(true);
-        } finally {
+            await fetchUser();
+        } catch (error) {
             setLoading(false);
+            throw error;
         }
     };
 
