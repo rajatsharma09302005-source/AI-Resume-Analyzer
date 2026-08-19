@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 
     # Local apps
     'users',
+    'resumes',
 ]
 
 MIDDLEWARE = [
@@ -125,3 +126,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
+
+# Media files
+MEDIA_URL = '/'
+MEDIA_ROOT = BASE_DIR
