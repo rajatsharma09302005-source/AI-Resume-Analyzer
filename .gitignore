@@ -62,6 +62,9 @@ media/
 backend/staticfiles/
 staticfiles/
 
+# User uploaded resumes
+backend/resumes/
+
 # =========================
 # General / OS
 # =========================
